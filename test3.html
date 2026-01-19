@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Porównywarka Domków na Panieński</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6b81;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333;
+            --green: #2ecc71;
+            --red: #e74c3c;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+
+        .map-container {
+            width: 100%;
+            height: 400px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        iframe { width: 100%; height: 100%; border: 0; }
+
+        /* --- GŁÓWNY KONTENER --- */
+        .main-wrapper {
+            position: relative; /* Potrzebne do pozycjonowania strzałek */
+            max-width: 100%;
+            padding: 0 50px; /* Miejsce na strzałki */
+        }
+
+        .main-container {
+            padding: 20px 0;
+            overflow-x: auto;
+            cursor: grab; /* Kursor łapki */
+            /* Ukrywanie suwaka, ale zachowanie funkcjonalności */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* IE and Edge */
+        }
+        
+        .main-container::-webkit-scrollbar {
+            display: none; /* Chrome */
+        }
+
+        .main-container.active {
+            cursor: grabbing; /* Kursor zaciśniętej łapki */
+            cursor: -webkit-grabbing;
+        }
+
+        .comparison-wrapper {
+            display: flex;
+            gap: 25px;
+            padding-bottom: 20px;
+            padding-left: 10px; /* Margines bezpieczeństwa */
+            min-width: min-content;
+        }
+
+        /* --- STYL KARTY --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            width: 360px;
+            flex-shrink: 0;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            user-select: none; /* Zapobiega zaznaczaniu tekstu przy przeciąganiu */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        /* --- GŁÓWNE PRZYCISKI NAWIGACJI (BOKI EKRANU) --- */
+        .main-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            color: #333;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .main-nav-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .main-nav-btn.left { left: 5px; }
+        .main-nav-btn.right { right: 5px; }
+
+        /* --- GALERIA WEWNĄTRZ KARTY --- */
+        .gallery-wrapper {
+            position: relative;
+            height: 220px;
+            width: 100%;
+        }
+
+        .gallery {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+        .gallery::-webkit-scrollbar { display: none; }
+
+        .gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            pointer-events: none; /* Ważne: zapobiega przeciąganiu samego obrazka */
+        }
+
+        /* Przyciski galerii */
+        .card-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            border: none;
+            font-size: 20px;
+            padding: 8px 12px;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.3s;
+            border-radius: 5px;
+        }
+        .card-nav-btn:hover { background: rgba(0, 0, 0, 0.7); }
+        .card-nav-btn.prev { left: 10px; }
+        .card-nav-btn.next { right: 10px; }
+
+        /* --- TREŚĆ KARTY --- */
+        .card-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            height: 50px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .location {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .price-box {
+            background-color: #fff0f3;
+            border: 1px solid #ffccd5;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .price-total { font-size: 20px; font-weight: 800; color: var(--primary-color); }
+        .price-person { font-size: 12px; color: #555; }
+
+        .rating {
+            display: inline-block;
+            background: #2c3e50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .rating.high { background: var(--green); }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 2px;
+        }
+
+        .travel-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 6px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #f9f9f9;
+        }
+        .travel-row:last-child { border-bottom: none; }
+        .city-name { font-weight: 600; color: #444; width: 80px; }
+        .travel-times { display: flex; gap: 10px; font-size: 12px; }
+        .travel-times span { display: flex; align-items: center; gap: 3px; }
+
+        .pros-list, .cons-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+        }
+
+        .pros-list li, .cons-list li {
+            margin-bottom: 4px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .pros-list li::before { content: "✓"; color: var(--green); position: absolute; left: 0; font-weight: bold; }
+        .cons-list li::before { content: "✕"; color: var(--red); position: absolute; left: 0; font-weight: bold; }
+
+        .btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            padding: 12px 0;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: auto;
+            transition: background 0.2s;
+        }
+        .btn:hover { background: #ff4757; }
+        
+        /* Podpowiedź */
+        .drag-hint {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+            display: none;
+        }
+        @media (min-width: 992px) {
+            .drag-hint { display: block; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="map-container">
+        <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1URs0LJ8qwF7Zdr0f_elvO9EZJdMDLoA&ehbc=2E312F"></iframe>
+    </div>
+
+    <div style="padding: 20px 0;">
+        <h2 style="text-align: center; margin-bottom: 10px; color: #444;">Porównanie Domków na Panieński</h2>
+        <div class="drag-hint">↔ Przesuń myszką lub użyj strzałek, aby przewijać ↔</div>
+        
+        <div class="main-wrapper">
+            <button class="main-nav-btn left" onclick="scrollMain(-1)">❮</button>
+            <button class="main-nav-btn right" onclick="scrollMain(1)">❯</button>
+
+            <div class="main-container" id="main-scroll-container">
+                <div class="comparison-wrapper" id="cards-container">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGIKA PRZEWIJANIA GŁÓWNEGO KONTENERA ---
+        
+        const slider = document.getElementById('main-scroll-container');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        // 1. Obsługa przycisków bocznych
+        function scrollMain(direction) {
+            const scrollAmount = 380; // Szerokość karty + odstęp
+            slider.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+
+        // 2. Obsługa "Złap i Przesuń" (Drag to Scroll)
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.classList.add('active');
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+            slider.classList.remove('active');
+        });
+
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+            slider.classList.remove('active');
+        });
+
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2; // Prędkość przewijania
+            slider.scrollLeft = scrollLeft - walk;
+        });
+
+
+        // --- LOGIKA GALERII ZDJĘĆ ---
+        function scrollGallery(btn, direction) {
+            const gallery = btn.parentElement.querySelector('.gallery');
+            const scrollAmount = gallery.clientWidth;
+            gallery.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+
+        // --- DANE ---
+        const properties = [
+            {
+                id: 1,
+                name: "Klimatyczna chatka u podnóża góry",
+                link: "https://www.booking.com/hotel/pl/klimatyczna-chatka-u-podnoza-gory.pl.html",
+                location: "Porąbka (Kątowa 4)",
+                priceTotal: 4110,
+                pricePerPerson: 512,
+                rating: 9.1,
+                reviews: 23,
+                travel: {
+                    wro: { car: "3.5h", train: "5.5h" },
+                    opole: { car: "2.5h", train: "4h" },
+                    kat: { car: "1.5h", train: "3h" }
+                },
+                pros: ["Spoko salon", "Hamaki", "Blisko szlak na górę Żar", "Cisza i las"],
+                cons: ["Wynajem min. 3 noce", "Mała sauna", "Babciowy klimat", "Rezerwacja na marzec"],
+                images: [
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/637884532.jpg?k=95537e7aa1bb74569a7b8094f514f6154e214c0fb49bb8a3ba6334840f4bc879",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/701058925.jpg?k=cb378025af035a05044eba3ee5912ad6b7f8a64fb341420fa32a358f11cacd60",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/539061242.jpg?k=291e174c412db7ee2a92b538a2017929c16ce0fe82b6192e7fbbc04cef4444ea",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/539061253.jpg?k=6ded9fef770c9e2bd50bf96df68234a76cf5f682b0a6c04e7654b3368131993a",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/335645550.jpg?k=a3db47168b378fd2752205096dd29ecd683d8aa7c82d9481f9a3e0769670245b"
+                ]
+            },
+            {
+                id: 2,
+                name: "DELUXE Dom z sauną i jacuzzi",
+                link: "https://www.booking.com/hotel/pl/dom-z-sauna-i-jacuzzi-w-otoczeniu-gor-lasu-i-jeziora.pl.html",
+                location: "Łodygowice (Cisowa 5)",
+                priceTotal: 4450,
+                pricePerPerson: 556,
+                rating: 10.0,
+                reviews: 3,
+                travel: {
+                    wro: { car: "3.5h", train: "5.5h" },
+                    opole: { car: "2.5h", train: "4h" },
+                    kat: { car: "1.5h", train: "3h" }
+                },
+                pros: ["Super przestrzenie", "Basen", "Wnętrze i zewnątrz"],
+                cons: ["W miasteczku", "Daleko do gór (1h pieszo)", "Właściciel na piętrze (do weryfikacji)"],
+                images: [
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/801492925.jpg?k=6eb1275e221bce121a1f646e97130e04a669878fd218c9b2ac8287f4df339d43",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/722845217.jpg?k=ba2d694e96f0a867af3f5fc447c8810aa3f8902e7398852fd2872917a8956c8d",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/549216288.jpg?k=11f162a387902a58f10237b060f8fc751515641da996c7481b5b44c6c517f57c",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/549216310.jpg?k=796b845cf76d4850df2943b9651e1fdf9798b7a609a4cacab04a4e0e8518cc2e",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/548842558.jpg?k=196218d0575456854e06c37d93dae231c13ce14407bb58f64c34a04896cae883"
+                ]
+            },
+            {
+                id: 3,
+                name: "Willa Góralka",
+                link: "https://www.booking.com/hotel/pl/willa-goralka-szczyrk.pl.html",
+                location: "Szczyrk (Wczasowa 12)",
+                priceTotal: 3100,
+                pricePerPerson: 390,
+                rating: 9.9,
+                reviews: 29,
+                travel: {
+                    wro: { car: "3.0h", train: "4.5h" },
+                    opole: { car: "2.5h", train: "3.5h" },
+                    kat: { car: "1.5h", train: "2h" }
+                },
+                pros: ["Względnie tanio", "Spoko salon", "Duży taras z grillem", "Bilard", "Teren prywatny"],
+                cons: ["W miasteczku (choć blisko na drinka)"],
+                images: [
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/496370841.jpg?k=41bed079d6c6e1bce87bdf68cea32146c601fcb72c23ddecd902be534f6412ca",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/404570504.jpg?k=3713474b2383319f42735aebf3295bdc9f255f0e87af1e90cd7dcaf128704a77",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/404570542.jpg?k=5c16f13e0b57c2333b2f5bf9df4e0bc4fff5fa6b6816cf56c8683637da852df3",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/610169920.jpg?k=87fb4fa86791e91189ca5f49008c3bdda90b43721bf099cebdda63ee5030568f",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/496370635.jpg?k=f08eb0b8889123d1201a913e5aa7f67517d7e71874bd89ccaf9e276f40a7b86a"
+                ]
+            },
+            {
+                id: 4,
+                name: "SOLNA",
+                link: "https://slowhop.com/pl/miejsca/6217-solna.html",
+                location: "Sól 68",
+                priceTotal: 3000,
+                pricePerPerson: 375,
+                rating: 10.0, 
+                reviews: "Slowhop",
+                travel: {
+                    wro: { car: "4.0h", train: "5h" },
+                    opole: { car: "3.0h", train: "4h" },
+                    kat: { car: "1.5h", train: "2.5h" }
+                },
+                pros: ["Cena", "Super salon", "Cisza i las", "Piłkarzyki, leżaki, huśtawka", "Klimatyczne"],
+                cons: ["Brak widocznych"],
+                images: [
+                    "https://photos.slowhop-static.net/op/491431/product/b2891dcb824ca57755706442405b527c-68a970009e0c6.jpg",
+                    "https://photos.slowhop-static.net/op/491431/product/ca44a339fe4b364ae12c10be5694fde6-68a8bf638a48c.jpg",
+                    "https://photos.slowhop-static.net/op/491431/product/46a318dcd23696a4d9642a77bab3b7cc-68a8bd763bbd3.jpg",
+                    "https://photos.slowhop-static.net/op/491431/product/12ecb8ac0cdc481d563b26fb1cd7e354-68a971f830bb2.jpg",
+                    "https://photos.slowhop-static.net/op/491431/product/4d59784e9c900eaebd383f52f5b98868-68a970e90b0be.jpg"
+                ]
+            },
+            {
+                id: 5,
+                name: "Domki po balu",
+                link: "https://www.booking.com/hotel/pl/domki-po-balu.pl.html",
+                location: "Rycerka Dolna",
+                priceTotal: 2840,
+                pricePerPerson: 355,
+                rating: 9.6,
+                reviews: 37,
+                travel: {
+                    wro: { car: "4.0h", train: "5h" },
+                    opole: { car: "3.0h", train: "4.5h" },
+                    kat: { car: "2.0h", train: "2.5h" }
+                },
+                pros: ["Cena", "Cisza i las", "Bilard, ping-pong", "Dużo szlaków"],
+                cons: ["Kilka domków obok siebie", "Wspólne ognisko", "ZAKAZ PANIEŃSKICH (do weryfikacji)"],
+                images: [
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/521887938.jpg?k=b0b69b50061dbdd5ad4e8a2ee005d583ed60fce828d01d89f0186c1d019d5f46",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/521894269.jpg?k=a366e981f59d62be4d4f4dde7b5b15670e5c23fe44f2839bc9e87e883555c308",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/520885007.jpg?k=9c6ccfcd08a8e395df58afdf8b361ee2c08e7a377500d16c3feafd8fd87f2895",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/701027967.jpg?k=b2f51efbf1dbfbd27d5271513c024884caccb5a3bc5396734632742c205c1595",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/701027859.jpg?k=1020cdbf7bd331d631b464dc7b8c82e20c5cd566029f1229335baf36c110d8d5"
+                ]
+            },
+            {
+                id: 6,
+                name: "Agroturystyka Windmill",
+                link: "https://www.booking.com/hotel/pl/dom-na-wylacznosc-z-jacuzzi-i-sauna.pl.html",
+                location: "Mucharz",
+                priceTotal: 4100,
+                pricePerPerson: 512,
+                rating: 9.1,
+                reviews: 6,
+                travel: {
+                    wro: { car: "4.0h", train: "5h+15m" },
+                    opole: { car: "3.0h", train: "4h+15m" },
+                    kat: { car: "1.5h", train: "3h+15m" }
+                },
+                pros: ["Blisko jezioro z plażą", "Basen (wspólny)"],
+                cons: ["Kilka domków obok siebie", "Brak dojazdu komunikacją"],
+                images: [
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/626878771.jpg?k=a5313d2aed64ef530d064f386819ccff43cae29eea867058f9246db5b11493a5",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615440760.jpg?k=7d3413bdb08af8032982f489dcd4e4c31c61329b016a86767d4fba99368c2f55",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615442686.jpg?k=9ae7aa97755e21cb8d6d707c0ad38ab244c6a21426ceb2b6cd2d5c97881b4e2f",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615442681.jpg?k=488e8cce0bdb7d2b524cadade5406aee354a69675889044bd8f9f5ee11f81834",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615440769.jpg?k=a6cffdccfd5609a6dd081d31ddfc313635619a9cb19ff3e3ffde36ddfec09bbc"
+                ]
+            }
+        ];
+
+        const container = document.getElementById('cards-container');
+
+        properties.forEach(prop => {
+            const prosHtml = prop.pros.map(p => `<li>${p}</li>`).join('');
+            const consHtml = prop.cons.map(c => `<li>${c}</li>`).join('');
+            const imgsHtml = prop.images.map(src => `<img src="${src}" alt="${prop.name}">`).join('');
+            const ratingClass = prop.rating >= 9.0 ? 'high' : '';
+
+            const html = `
+                <div class="card">
+                    <div class="gallery-wrapper">
+                        <button class="card-nav-btn prev" onclick="scrollGallery(this, -1)">❮</button>
+                        <div class="gallery">
+                            ${imgsHtml}
+                        </div>
+                        <button class="card-nav-btn next" onclick="scrollGallery(this, 1)">❯</button>
+                    </div>
+                    
+                    <div class="card-content">
+                        <div class="card-title">${prop.name}</div>
+                        <div class="location">📍 ${prop.location}</div>
+                        
+                        <div class="rating ${ratingClass}">
+                             ⭐ ${prop.rating} <span style="font-size:10px; font-weight:400; opacity:0.8">(${prop.reviews} opinii)</span>
+                        </div>
+
+                        <div class="price-box">
+                            <div class="price-total">${prop.priceTotal} zł</div>
+                            <div class="price-person">${prop.pricePerPerson} zł / os</div>
+                        </div>
+
+                        <div class="section-title">Dojazd</div>
+                        <div class="travel-row">
+                            <span class="city-name">Wrocław</span>
+                            <div class="travel-times">
+                                <span>🚗 ${prop.travel.wro.car}</span>
+                                <span>🚆 ${prop.travel.wro.train}</span>
+                            </div>
+                        </div>
+                        <div class="travel-row">
+                            <span class="city-name">Opole</span>
+                            <div class="travel-times">
+                                <span>🚗 ${prop.travel.opole.car}</span>
+                                <span>🚆 ${prop.travel.opole.train}</span>
+                            </div>
+                        </div>
+                        <div class="travel-row">
+                            <span class="city-name">Katowice</span>
+                            <div class="travel-times">
+                                <span>🚗 ${prop.travel.kat.car}</span>
+                                <span>🚆 ${prop.travel.kat.train}</span>
+                            </div>
+                        </div>
+
+                        <div class="section-title" style="color:var(--green)">Plusy</div>
+                        <ul class="pros-list">
+                            ${prosHtml}
+                        </ul>
+
+                        <div class="section-title" style="color:var(--red)">Minusy</div>
+                        <ul class="cons-list">
+                            ${consHtml}
+                        </ul>
+
+                        <a href="${prop.link}" target="_blank" class="btn">Zobacz ofertę</a>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += html;
+        });
+    </script>
+</body>
+</html>
