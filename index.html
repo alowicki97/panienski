@@ -282,6 +282,15 @@
             .drag-hint { display: block; }
         }
 
+	@media (max-width: 768px) {
+    	    .main-nav-btn {
+                display: none !important;
+    	    }
+    	    .main-wrapper {
+                padding: 0 15px !important;
+    	    }
+	}
+
     </style>
 </head>
 <body>
@@ -368,6 +377,7 @@
                 location: "Porąbka (Kątowa 4)",
                 priceTotal: 4110,
                 pricePerPerson: 512,
+		space: 100,
                 rating: 9.1,
                 reviews: 23,
                 travel: {
@@ -379,10 +389,12 @@
                 cons: ["Wynajem min. 3 noce", "Mała sauna", "Babciowy klimat", "Rezerwacja na marzec"],
                 images: [
                     "https://cf.bstatic.com/xdata/images/hotel/max1024x768/637884532.jpg?k=95537e7aa1bb74569a7b8094f514f6154e214c0fb49bb8a3ba6334840f4bc879",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/701058925.jpg?k=cb378025af035a05044eba3ee5912ad6b7f8a64fb341420fa32a358f11cacd60",
                     "https://cf.bstatic.com/xdata/images/hotel/max1024x768/539061242.jpg?k=291e174c412db7ee2a92b538a2017929c16ce0fe82b6192e7fbbc04cef4444ea",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/539061253.jpg?k=6ded9fef770c9e2bd50bf96df68234a76cf5f682b0a6c04e7654b3368131993a",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/335645550.jpg?k=a3db47168b378fd2752205096dd29ecd683d8aa7c82d9481f9a3e0769670245b"
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/441879304.jpg?k=7f0d44901889fff44b6c6e33c383a0b11bc6dd346947dc5d4eddb500f542ea74",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/98274030.jpg?k=2b7001af4d258e0f77371a0d1c6327f73c147d39c42aeb909201e2d56e65633f",
+		    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/71674897.jpg?k=92ec86d5970842c5d2d86f649239b65350b7dd488dcc21548b080182bc35077c",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/141527860.jpg?k=da41b94efd88540d305342280997cf49575aa9a0d7e9c9bf6f3afd6e9a781072",
+		    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/258213317.jpg?k=a35c6549589b859fc9dd9c08ccb47351e4806f17d04fa6fa74848a575e209e8b"
                 ]
             },
             {
@@ -392,6 +404,7 @@
                 location: "Łodygowice (Cisowa 5)",
                 priceTotal: 4450,
                 pricePerPerson: 556,
+		space: 150,
                 rating: 10.0,
                 reviews: 3,
                 travel: {
@@ -403,10 +416,10 @@
                 cons: ["W miasteczku", "Daleko do gór (1h pieszo)", "Właściciel na piętrze (do weryfikacji)"],
                 images: [
                     "https://cf.bstatic.com/xdata/images/hotel/max1024x768/801492925.jpg?k=6eb1275e221bce121a1f646e97130e04a669878fd218c9b2ac8287f4df339d43",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/722845217.jpg?k=ba2d694e96f0a867af3f5fc447c8810aa3f8902e7398852fd2872917a8956c8d",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/549216288.jpg?k=11f162a387902a58f10237b060f8fc751515641da996c7481b5b44c6c517f57c",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/549216310.jpg?k=796b845cf76d4850df2943b9651e1fdf9798b7a609a4cacab04a4e0e8518cc2e",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/548842558.jpg?k=196218d0575456854e06c37d93dae231c13ce14407bb58f64c34a04896cae883"
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/549216325.jpg?k=0fa562413ee9436d1b6673d7272e6be41e2aa927647d77bcd4f34bbce56ab8f8",
+		    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/548842481.jpg?k=5ac8b7aa6fbf458bdba968ec224a2f00a494bc7bdaf48ba06bf5a664b434d7ae",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/548842487.jpg?k=c011c1926eb6470bb2a0c3e440fb6bcd891667356482db65fe4e037153dd9fd3",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/801469873.jpg?k=cb26f51dba316ed4986e15f3834cff267dfe852078d965eb00c475594a1eb7a7"
                 ]
             },
             {
@@ -416,6 +429,7 @@
                 location: "Szczyrk (Wczasowa 12)",
                 priceTotal: 3100,
                 pricePerPerson: 390,
+		space: 250,
                 rating: 9.9,
                 reviews: 29,
                 travel: {
@@ -427,10 +441,11 @@
                 cons: ["W miasteczku (choć blisko na drinka)"],
                 images: [
                     "https://cf.bstatic.com/xdata/images/hotel/max1024x768/496370841.jpg?k=41bed079d6c6e1bce87bdf68cea32146c601fcb72c23ddecd902be534f6412ca",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/404570504.jpg?k=3713474b2383319f42735aebf3295bdc9f255f0e87af1e90cd7dcaf128704a77",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/404570542.jpg?k=5c16f13e0b57c2333b2f5bf9df4e0bc4fff5fa6b6816cf56c8683637da852df3",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/610169920.jpg?k=87fb4fa86791e91189ca5f49008c3bdda90b43721bf099cebdda63ee5030568f",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/496370635.jpg?k=f08eb0b8889123d1201a913e5aa7f67517d7e71874bd89ccaf9e276f40a7b86a"
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/404570539.jpg?k=2bbc75d4ce49c1850a46fb688a5f8d2f4af6179ffa61ef23b3d2cef4838645ce",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/586619587.jpg?k=5d85317905c4bf1c878f45762ba9b6f3a9b566d721097c3c90e619a43f954dda",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/404570465.jpg?k=b8e2a7e2179f8ea72f8452404913b43da9f7a67296e513313aa6a03c672ebdbe",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/404570391.jpg?k=c996627bc3d12e83dacabd63448a3e6660251fe5216fd1b1f02b1312771ce261",
+		    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/416896739.jpg?k=5087fa90660f97cc835ac5ca19e49d259a78031e87f75faea71ef2765f4baa18"
                 ]
             },
             {
@@ -440,6 +455,7 @@
                 location: "Sól 68",
                 priceTotal: 3000,
                 pricePerPerson: 375,
+		space: 126,
                 rating: 10.0, 
                 reviews: "Slowhop",
                 travel: {
@@ -451,10 +467,11 @@
                 cons: ["Brak widocznych"],
                 images: [
                     "https://photos.slowhop-static.net/op/491431/product/b2891dcb824ca57755706442405b527c-68a970009e0c6.jpg",
-                    "https://photos.slowhop-static.net/op/491431/product/ca44a339fe4b364ae12c10be5694fde6-68a8bf638a48c.jpg",
-                    "https://photos.slowhop-static.net/op/491431/product/46a318dcd23696a4d9642a77bab3b7cc-68a8bd763bbd3.jpg",
-                    "https://photos.slowhop-static.net/op/491431/product/12ecb8ac0cdc481d563b26fb1cd7e354-68a971f830bb2.jpg",
-                    "https://photos.slowhop-static.net/op/491431/product/4d59784e9c900eaebd383f52f5b98868-68a970e90b0be.jpg"
+		    "https://photos.slowhop-static.net/op/491431/product/4d59784e9c900eaebd383f52f5b98868-68a970e90b0be.jpg",
+                    "https://photos.slowhop-static.net/op/491431/product/236e35759f34cbf8d7eb1b2befc21948-68a97f2eac5cf.jpg",
+                    "https://photos.slowhop-static.net/op/491431/product/4462c377a38748ca6a807caf150559a3-68a9761a73c1f.jpg",
+                    "https://photos.slowhop-static.net/op/491431/product/66ec2429829e4272c5dc9a6bc82faf5e-68a9746169fc8.jpg",
+		    "https://photos.slowhop-static.net/op/491431/product/90bd5e9730c6986fd151708fe376accc-68a9783be9eed.jpg"
                 ]
             },
             {
@@ -464,6 +481,7 @@
                 location: "Rycerka Dolna",
                 priceTotal: 2840,
                 pricePerPerson: 355,
+		space: 120,
                 rating: 9.6,
                 reviews: 37,
                 travel: {
@@ -474,11 +492,11 @@
                 pros: ["Cena", "Cisza i las", "Bilard, ping-pong", "Dużo szlaków"],
                 cons: ["Kilka domków obok siebie", "Wspólne ognisko", "ZAKAZ PANIEŃSKICH (do weryfikacji)"],
                 images: [
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/521887938.jpg?k=b0b69b50061dbdd5ad4e8a2ee005d583ed60fce828d01d89f0186c1d019d5f46",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/521894269.jpg?k=a366e981f59d62be4d4f4dde7b5b15670e5c23fe44f2839bc9e87e883555c308",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/520885007.jpg?k=9c6ccfcd08a8e395df58afdf8b361ee2c08e7a377500d16c3feafd8fd87f2895",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/701027967.jpg?k=b2f51efbf1dbfbd27d5271513c024884caccb5a3bc5396734632742c205c1595",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/701027859.jpg?k=1020cdbf7bd331d631b464dc7b8c82e20c5cd566029f1229335baf36c110d8d5"
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/520885095.jpg?k=b31094ddf5995be319e83c500bb327b519e8e2ecd88c3cb373990d084af52ede",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/701025778.jpg?k=e18223673d3d97bd5edd82ca3df45634811239397297ea82692f03677bb82fc3",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/701025647.jpg?k=55925edf6530a3f140e05517f68a133172a27b0e2119913d77b41d1a5322d068",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/667059982.jpg?k=96b49bcc3eeefe3f7a7ac5ba2aa33b630e9d6daf0cef8d91f6ba5fc7877a9799",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/701027113.jpg?k=c520038a82b07558544203700ed3f1ddb082c2964395249711ffe56b7100c0eb"
                 ]
             },
             {
@@ -488,6 +506,7 @@
                 location: "Mucharz",
                 priceTotal: 4100,
                 pricePerPerson: 512,
+		space: 300,
                 rating: 9.1,
                 reviews: 6,
                 travel: {
@@ -495,14 +514,16 @@
                     opole: { car: "3.0h", train: "4h+15m" },
                     kat: { car: "1.5h", train: "3h+15m" }
                 },
-                pros: ["Blisko jezioro z plażą", "Basen (wspólny)"],
-                cons: ["Kilka domków obok siebie", "Brak dojazdu komunikacją"],
+                pros: ["Blisko jezioro z plażą", "Basen (współdzielony)"],
+                cons: ["Kilka domków obok siebie", "Brak dojazdu komunikacją miejską"],
                 images: [
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/626878771.jpg?k=a5313d2aed64ef530d064f386819ccff43cae29eea867058f9246db5b11493a5",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615434951.jpg?k=25e852193fbac471bdd4ddddeb839cecf2e7ce89c88c406f6d251c1b66c9e30e",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615434668.jpg?k=5f501b5c6cd9d6780c19b9d0ad7162ca2d63815eeecdef1a3c3dbccb77cb8643",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615434769.jpg?k=6d66232a0aab5ad9304eefd5834ec05bab51363363192cce3b1f788224b15644",
+                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615440769.jpg?k=a6cffdccfd5609a6dd081d31ddfc313635619a9cb19ff3e3ffde36ddfec09bbc",
                     "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615440760.jpg?k=7d3413bdb08af8032982f489dcd4e4c31c61329b016a86767d4fba99368c2f55",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615442686.jpg?k=9ae7aa97755e21cb8d6d707c0ad38ab244c6a21426ceb2b6cd2d5c97881b4e2f",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615442681.jpg?k=488e8cce0bdb7d2b524cadade5406aee354a69675889044bd8f9f5ee11f81834",
-                    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/615440769.jpg?k=a6cffdccfd5609a6dd081d31ddfc313635619a9cb19ff3e3ffde36ddfec09bbc"
+		    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/673028024.jpg?k=ff1b22ed286885a25c5d455c87a70d2cb81f48a47f0d4daa2420d53737a5c0c2",
+		    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/688497731.jpg?k=d421ddccf01f0dfb3ae9f21efbae559488f436e1eeb673bc5d5a2811b2994507"
                 ]
             }
         ];
@@ -560,6 +581,9 @@
                                 <span>🚆 ${prop.travel.kat.train}</span>
                             </div>
                         </div>
+			
+			<div class="section-title">Powierzchnia</div>
+			<span> ${prop.space} m<sup>2</sup> </span>
 
                         <div class="section-title" style="color:var(--green)">Plusy</div>
                         <ul class="pros-list">
